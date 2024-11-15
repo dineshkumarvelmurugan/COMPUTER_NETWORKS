@@ -1,0 +1,79 @@
+Bit stuffying
+#include <stdio.h>
+#include <string.h>
+
+
+int main() {
+    char data[100], stuffedData[200];
+    int i, count = 0, j = 0;
+    
+    printf("Enter the data: ");
+    scanf("%s", data);
+    
+    for(i = 0; i < strlen(data); i++) {
+        if(data[i] == '1') {
+            count++;
+            stuffedData[j++] = data[i];
+        } else {
+            count = 0;
+            stuffedData[j++] = data[i];
+        }
+        
+        if(count == 5) {
+            count = 0;
+            stuffedData[j++] = '0';
+        }
+    }
+    
+    stuffedData[j] = '\0';
+    
+    printf("Data after bit stuffing: %s\n", stuffedData);
+    
+    return 0;
+}
+
+
+byte stuffing
+
+
+#include <stdio.h>
+#include <string.h>
+
+#define FLAG 126  // Define FLAG as 126
+#define ESC 125   // Define ESC as 125
+
+void byteStuffing(char *input, char *output) {
+    int i, j = 0;
+    int len = strlen(input);
+
+    for (i = 0; i < len; i++) {
+        if (input[i] == FLAG) {
+            output[j++] = ESC;        // Insert ESC before FLAG
+            output[j++] = FLAG ^ 1;   // Insert FLAG after ESC
+        } else if (input[i] == ESC) {
+            output[j++] = ESC;        // Insert ESC before ESC
+            output[j++] = ESC ^ 1;    // Insert ESC after ESC
+        } else {
+            output[j++] = input[i];   // Copy the input byte
+        }
+    }
+    output[j] = '\0'; // Null-terminate the output string
+}
+
+int main() {
+    char input[100];
+    char output[200];
+
+    printf("Enter the input string: ");
+    fgets(input, sizeof(input), stdin);
+
+    // Remove the newline character added by fgets
+    input[strcspn(input, "\n")] = 0;
+
+    byteStuffing(input, output);
+
+    printf("Stuffed output: %s\n", output);
+
+    return 0;
+}
+
